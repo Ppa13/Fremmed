@@ -3,8 +3,6 @@ $(() => {
     // ** Variables ** //
     const $startView = $('#startView');
     const $enterPageBtn = $("#enterPageBtn");
-    const $enterPageTxt = $("#enterPageTxt");
-    const $enterPageLogo = $("#enterPageLogo");
     const $hamburger = $(".hamburger");
     const $nav = $("nav");
     const $logoBtn = $("#logoBtn");
@@ -14,6 +12,7 @@ $(() => {
     const $handsVideoMobile = $('#handsVideoMobile');
     const $handsVideoWeb = $('#handsVideoWeb');
     const $playDeidreBtn = $("#playDeidreBtn");
+    const $videoControlsWrapper = $('#videoControlsWrapper');
     const $deidreVideo = $('.deidreVideo');
     const $videoControls = $(".videoControls");
     const $fullscreenBtn = $("#fullscreenBtn");
@@ -30,11 +29,11 @@ $(() => {
     const $footer = $("footer");
 
     // ** Hide on page load ** //
-    $enterPageLogo.addClass('kenburns-top');
     $logoBtn.hide();
     $hamburger.hide();
     $nav.hide();
     $handsVideo.hide();
+    $videoControlsWrapper.hide();
     $discoverMoreMain.hide();
     $footer.hide();
 
@@ -43,16 +42,12 @@ $(() => {
         loadHomepage();
     });
 
-    $enterPageTxt.click(function(){
-        loadHomepage();
-    });
-
     function loadHomepage(){
         $startView.hide();
         $homeBtn.hide();
         $discoverFremmedBtn.show();
         $logoBtn.show();
-        if (window.matchMedia("(min-width: 700px)").matches) {
+        if (window.matchMedia("(min-width: 1023px)").matches) {
             $hamburger.hide();
             $nav.show();
             $handsVideoWeb.show();
@@ -67,7 +62,7 @@ $(() => {
     // ** Logo button ** //
     $logoBtn.click(function(){
         location. reload(true);
-        $startView.show();
+        loadHomepage();
     });
 
     // ** Hamburger menu ** //
@@ -86,23 +81,30 @@ $(() => {
         $discoverMoreMain.hide();
         $footer.hide();
         $deidreVideo.show();
+        $videoControlsWrapper.show();
         $videoControls.css('display', 'flex');
         if($deidreVideo[0].paused) {
             $deidreVideo[0].play();
         }
-        if (window.matchMedia("(min-width: 700px)").matches) {
-            $fullscreenBtn.hide();
+        if (window.matchMedia("(min-width: 992px)").matches) {
+            setTimeout(function() {
+                $videoControls.fadeOut();
+                }, 3000);
         }
+
+        /* show/hide video player controls on hover */
+        $videoControlsWrapper.bind('hover mouseenter', function() {
+            $videoControls.fadeIn();
+            $videoControls.on('mouseleave', function() {
+                $videoControls.fadeOut();
+            });
+        });
     });
+
 
     // ** Fullscreen video ** //
     $fullscreenBtn.on('click', function() {
-        //For Webkit
-        $deidreVideo[0].webkitEnterFullscreen();
-
-        //For Firefox
-        $deidreVideo[0].mozRequestFullScreen();
-
+        $deidreVideo[0].requestFullscreen();
         return false;
     });
 
@@ -113,7 +115,6 @@ $(() => {
         if($deidreVideo[0].played) {
             $deidreVideo[0].pause();
         }
-        console.log('paused');
     });
 
     // ** Play video ** //
@@ -123,7 +124,6 @@ $(() => {
         if($deidreVideo[0].paused) {
             $deidreVideo[0].play();
         }
-        console.log('played');
     });
 
     // ** Mute video ** //
@@ -131,7 +131,6 @@ $(() => {
         $(this).hide();
         $loudBtn.css('display', 'flex');
         $deidreVideo.prop('muted', true);
-        console.log('muted');
     });
 
     // ** Unmute video ** //
@@ -139,23 +138,22 @@ $(() => {
         $(this).hide();
         $muteBtn.css('display', 'flex');
         $deidreVideo.prop('muted', false);
-        console.log('unmuted');
     });
 
     // ** Progress bar video ** /
 
     //get HTML5 video time duration
-    $deidreVideo.on('loadedmetadata', function() {
+    $deidreVideo.on('timeupdate', function() {
         var minutes = Math.floor($deidreVideo[0].duration / 60);
-        var seconds = Math.floor($deidreVideo[0].duration);
-        $duration.text(minutes+':'+seconds);
+        var seconds = ($deidreVideo[0].duration % 60).toFixed(0);
+        $duration.text( "0" +minutes + ":" + (seconds < 10 ? '0' : '') + seconds);
     });
 
     //update HTML5 video current play time
     $deidreVideo.on('timeupdate', function() {
         var minutes = Math.floor($deidreVideo[0].currentTime / 60);
-        var seconds = Math.floor($deidreVideo[0].currentTime);
-        $current.text(minutes+':'+seconds);
+        var seconds = ($deidreVideo[0].currentTime % 60).toFixed(0);
+        $current.text("0"+minutes+':'+seconds);
     });
 
     $deidreVideo.on('timeupdate', function() {
@@ -207,13 +205,13 @@ $(() => {
             $pauseBtn.show();
             $deidreVideo[0].pause();
         }
-        $videoControls.hide();
+        $videoControlsWrapper.hide();
         $deidreVideo.hide();
         $homeBtn.hide();
         $logoBtn.show();
         $playDeidreBtn.show();
         $discoverFremmedBtn.show();
-        if (window.matchMedia("(min-width: 700px)").matches) {
+        if (window.matchMedia("(min-width: 992px)").matches) {
             $hamburger.hide();
             $nav.show();
             $handsVideoWeb.show();
@@ -235,10 +233,10 @@ $(() => {
         $handsVideo.hide();
         $logoBtn.show();
         $homeBtn.show();
-        $homeBtn.css('bottom','40%');
+        $homeBtn.css('bottom','36%');
         $discoverMoreMain.show();
         $footer.show();
-        if (window.matchMedia("(min-width: 700px)").matches) {
+        if (window.matchMedia("(min-width: 1024px)").matches) {
             $hamburger.hide();
             $nav.show();
         }else {
@@ -256,7 +254,7 @@ $(() => {
         $deidreVideo[0].pause();
         $discoverFremmedBtn.show();
         $logoBtn.show();
-        if (window.matchMedia("(min-width: 700px)").matches) {
+        if (window.matchMedia("(min-width: 1024px)").matches) {
             $hamburger.hide();
             $nav.show();
             $handsVideoWeb.show();
